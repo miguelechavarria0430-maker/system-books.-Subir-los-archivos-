@@ -1,101 +1,42 @@
-# Guía de Git Flow para EV07
 
-> Ejecutar estos comandos en la terminal, dentro de la carpeta del repositorio. Si el repositorio ya tiene `develop`, no volver a crearla.
+# Flujo de trabajo Git Flow
 
-## 1. Preparar ramas base
-```bash
-git status
-git branch
-```
+## 1. Ramas principales
 
-Si `develop` todavía no existe:
-```bash
-git checkout main
-git pull origin main
-git checkout -b develop
-git push -u origin develop
-```
+- main: contiene las versiones estables del proyecto.
+- develop: integra el desarrollo de las funcionalidades.
 
-Si ya existe:
-```bash
-git checkout develop
-git pull origin develop
-```
+## 2. Ramas de características
 
-## 2. Repetir este flujo para cada componente
-Para cada rama: partir de `develop`, crear la feature, agregar el archivo, hacer commit, subir la rama, volver a develop y fusionar.
+Se utilizan las siguientes ramas:
 
-### Libro
-```bash
-git checkout develop
-git checkout -b feature/models-libro
-git add Models/Libro.cs
-git commit -m "feat: create Libro class with properties and constructors"
-git push -u origin feature/models-libro
-git checkout develop
-git merge --no-ff feature/models-libro -m "merge: integrate models-libro into develop"
-git push origin develop
-```
+- feature/models-libro
+- feature/models-usuario
+- feature/models-prestamo
+- feature/models-enum-estado-prestamo
+- feature/models-testing-objetos
 
-### Usuario
-```bash
-git checkout develop
-git checkout -b feature/models-usuario
-git add Models/Usuario.cs
-git commit -m "feat: create Usuario class with properties and methods"
-git push -u origin feature/models-usuario
-git checkout develop
-git merge --no-ff feature/models-usuario -m "merge: integrate models-usuario into develop"
-git push origin develop
-```
+## 3. Proceso de trabajo
 
-### Prestamo
-```bash
-git checkout develop
-git checkout -b feature/models-prestamo
-git add Models/Prestamo.cs
-git commit -m "feat: create Prestamo class and date methods"
-git push -u origin feature/models-prestamo
-git checkout develop
-git merge --no-ff feature/models-prestamo -m "merge: integrate models-prestamo into develop"
-git push origin develop
-```
+1. Crear cada rama feature a partir de develop.
+2. Implementar la funcionalidad correspondiente.
+3. Registrar los cambios mediante commits descriptivos.
+4. Publicar la rama en GitHub.
+5. Crear un Pull Request hacia develop.
+6. Revisar e integrar los cambios mediante Merge.
 
-### EstadoPrestamo
-```bash
-git checkout develop
-git checkout -b feature/models-enum-estado-prestamo
-git add Models/EstadoPrestamo.cs
-git commit -m "feat: add EstadoPrestamo enumeration"
-git push -u origin feature/models-enum-estado-prestamo
-git checkout develop
-git merge --no-ff feature/models-enum-estado-prestamo -m "merge: integrate enum into develop"
-git push origin develop
-```
+## 4. Integración final
 
-### Pruebas con objetos
-```bash
-git checkout develop
-git checkout -b feature/models-testing-objetos
-git add Program.cs
-git commit -m "test: add sample objects and model validation menu"
-git push -u origin feature/models-testing-objetos
-git checkout develop
-git merge --no-ff feature/models-testing-objetos -m "merge: integrate object testing into develop"
-git push origin develop
-```
+La rama develop reúne las funcionalidades implementadas y verificadas. Cuando el proyecto está completo y estable, sus cambios pueden integrarse en main.
 
-## 3. Verificar integración
-```bash
-git checkout develop
-git status
-git branch -a
-git log --oneline --graph --all
-```
+## 5. Convención de commits
 
-Si el repositorio remoto no está configurado, revisar:
-```bash
-git remote -v
-```
+- feat: nuevas funcionalidades.
+- fix: correcciones.
+- docs: documentación.
+- build: configuración del proyecto.
+- test: pruebas.
 
-No inventar ni editar el historial para simular ramas o merges. Las capturas de evidencia deben mostrar comandos ejecutados y resultados reales.
+## 6. Resultado esperado
+
+Un proyecto organizado mediante Git Flow, con historial de commits y Pull Requests que permiten identificar el desarrollo de cada funcionalidad.
