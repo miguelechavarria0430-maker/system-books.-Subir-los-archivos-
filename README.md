@@ -55,6 +55,11 @@ Relaciona un libro con un usuario y administra las fechas y el estado del prést
 Desde una terminal con .NET 8 instalado:
 
 ```bash
+## Mejoras finales
+
+- Se organizaron las clases del sistema de biblioteca.
+- Se implementaron modelos para libros, usuarios y préstamos.
+- Se documentó el flujo de trabajo Git Flow.
 dotnet restore
 dotnet build
 dotnet run
@@ -62,3 +67,8 @@ dotnet run
 
 ## Control de versiones
 El proyecto utiliza Git Flow con las ramas main, develop y ramas feature para desarrollar cada modelo y las pruebas de objetos.
+## Versión 1.0.0
+
+Primera versión del sistema de biblioteca.
+Incluye los modelos de libros, usuarios y préstamos,
+y la documentación del flujo de trabajo Git Flow.
