@@ -67,3 +67,8 @@ dotnet run
 
 ## Control de versiones
 El proyecto utiliza Git Flow con las ramas main, develop y ramas feature para desarrollar cada modelo y las pruebas de objetos.
+## Versión 1.0.0
+
+Primera versión del sistema de biblioteca.
+Incluye los modelos de libros, usuarios y préstamos,
+y la documentación del flujo de trabajo Git Flow.
