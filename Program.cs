@@ -283,10 +283,115 @@ class Program
     // ==============================
 
     static void ShowUsersMenu()
-    {
-        ShowModulePlaceholder("USUARIOS");
-    }
+{
+    bool volver = false;
 
+    while (!volver)
+    {
+        Console.Clear();
+        Console.WriteLine("========== MENU DE USUARIOS ==========");
+        Console.WriteLine("1. Registrar usuario");
+        Console.WriteLine("2. Listar usuarios");
+        Console.WriteLine("3. Consultar usuario");
+        Console.WriteLine("4. Actualizar usuario");
+        Console.WriteLine("5. Activar / Desactivar usuario");
+        Console.WriteLine("6. Eliminar usuario");
+        Console.WriteLine("7. Volver");
+        Console.WriteLine("======================================");
+
+        int opcion = ReadOption("Seleccione una opcion: ", 1, 7);
+
+        switch (opcion)
+        {
+            case 1: RegisterUser(); break;
+            case 2: ListUsers(); break;
+            case 3: ViewUserDetail(); break;
+            case 4: UpdateUserMenu(); break;
+            case 5: ToggleUserActiveStatus(); break;
+            case 6: DeleteUser(); break;
+            case 7: volver = true; break;
+        }
+    }
+}
+
+static void RegisterUser()
+{
+    ShowModuleAction("Registrar usuario",
+        "Se solicitaran los datos del nuevo usuario.");
+}
+
+static void ListUsers()
+{
+    ShowModuleAction("Listar usuarios",
+        "Se mostraran todos los usuarios registrados.");
+}
+
+static void ViewUserDetail()
+{
+    ShowModuleAction("Consultar usuario",
+        "Se podra consultar un usuario por ID o documento.");
+}
+
+static void UpdateUserMenu()
+{
+    bool volver = false;
+
+    while (!volver)
+    {
+        Console.Clear();
+        Console.WriteLine("========== ACTUALIZAR USUARIO ==========");
+        Console.WriteLine("1. Editar nombre");
+        Console.WriteLine("2. Editar contacto");
+        Console.WriteLine("3. Activar / Desactivar");
+        Console.WriteLine("4. Volver");
+        Console.WriteLine("========================================");
+
+        int opcion = ReadOption("Seleccione una opcion: ", 1, 4);
+
+        switch (opcion)
+        {
+            case 1: EditUserName(); break;
+            case 2: EditUserContact(); break;
+            case 3: ToggleUserActiveStatus(); break;
+            case 4: volver = true; break;
+        }
+    }
+}
+
+static void EditUserName()
+{
+    ShowModuleAction("Editar nombre",
+        "Se permitira modificar el nombre del usuario.");
+}
+
+static void EditUserContact()
+{
+    ShowModuleAction("Editar contacto",
+        "Se permitira modificar el correo y telefono.");
+}
+
+static void ToggleUserActiveStatus()
+{
+    ShowModuleAction("Estado del usuario",
+        "Se permitira activar o desactivar un usuario.");
+}
+
+static void DeleteUser()
+{
+    ShowModuleAction("Eliminar usuario",
+        "Se verificara que el usuario no tenga prestamos activos.");
+}
+static void ShowModuleAction(string titulo, string mensaje)
+{
+    Console.Clear();
+    Console.WriteLine("====================================");
+    Console.WriteLine($"       {titulo.ToUpperInvariant()}");
+    Console.WriteLine("====================================");
+    Console.WriteLine(mensaje);
+    Console.WriteLine();
+    Console.WriteLine("Presione una tecla para continuar...");
+    Console.ReadKey(true);
+}
     static void ShowLoansMenu()
     {
         ShowModulePlaceholder("PRESTAMOS");
