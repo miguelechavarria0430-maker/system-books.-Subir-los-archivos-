@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using SystemBooks.Models;
 
 namespace SystemBooks;
@@ -15,6 +16,10 @@ class Program
 
         ShowMainMenu();
     }
+
+    // ==============================
+    // MENU PRINCIPAL
+    // ==============================
 
     static void ShowMainMenu()
     {
@@ -60,6 +65,10 @@ class Program
         }
     }
 
+    // ==============================
+    // VALIDACION DE OPCIONES
+    // ==============================
+
     static int ReadOption(string mensaje, int minimo, int maximo)
     {
         while (true)
@@ -78,10 +87,200 @@ class Program
         }
     }
 
+    // ==============================
+    // MENU DE LIBROS
+    // ==============================
+
     static void ShowBooksMenu()
     {
-        ShowModulePlaceholder("LIBROS");
+        bool volver = false;
+
+        while (!volver)
+        {
+            Console.Clear();
+            Console.WriteLine("====================================");
+            Console.WriteLine("          MENU DE LIBROS");
+            Console.WriteLine("====================================");
+            Console.WriteLine("1. Registrar libro");
+            Console.WriteLine("2. Listar libros");
+            Console.WriteLine("3. Consultar detalle de libro");
+            Console.WriteLine("4. Actualizar libro");
+            Console.WriteLine("5. Eliminar libro");
+            Console.WriteLine("6. Volver al menu principal");
+            Console.WriteLine("====================================");
+
+            int opcion = ReadOption("Seleccione una opcion: ", 1, 6);
+
+            switch (opcion)
+            {
+                case 1:
+                    RegisterBook();
+                    break;
+                case 2:
+                    ListBooksMenu();
+                    break;
+                case 3:
+                    ViewBookDetail();
+                    break;
+                case 4:
+                    UpdateBookMenu();
+                    break;
+                case 5:
+                    DeleteBook();
+                    break;
+                case 6:
+                    volver = true;
+                    break;
+            }
+        }
     }
+
+    static void RegisterBook()
+    {
+        ShowBookAction(
+            "Registrar libro",
+            "Aqui se solicitaran los datos del nuevo libro.");
+    }
+
+    static void ListBooksMenu()
+    {
+        bool volver = false;
+
+        while (!volver)
+        {
+            Console.Clear();
+            Console.WriteLine("========== LISTAR LIBROS ==========");
+            Console.WriteLine("1. Listar todos");
+            Console.WriteLine("2. Listar disponibles");
+            Console.WriteLine("3. Listar prestados");
+            Console.WriteLine("4. Volver");
+            Console.WriteLine("===================================");
+
+            int opcion = ReadOption("Seleccione una opcion: ", 1, 4);
+
+            switch (opcion)
+            {
+                case 1:
+                    ListBooksAll();
+                    break;
+                case 2:
+                    ListBooksAvailable();
+                    break;
+                case 3:
+                    ListBooksBorrowed();
+                    break;
+                case 4:
+                    volver = true;
+                    break;
+            }
+        }
+    }
+
+    static void ListBooksAll()
+    {
+        ShowBookAction(
+            "Listar todos los libros",
+            "Se mostrara el listado completo de libros registrados.");
+    }
+
+    static void ListBooksAvailable()
+    {
+        ShowBookAction(
+            "Listar libros disponibles",
+            "Se mostraran solamente los libros disponibles.");
+    }
+
+    static void ListBooksBorrowed()
+    {
+        ShowBookAction(
+            "Listar libros prestados",
+            "Se mostraran los libros que actualmente estan prestados.");
+    }
+
+    static void ViewBookDetail()
+    {
+        ShowBookAction(
+            "Consultar detalle de libro",
+            "Se podra consultar un libro mediante su ID o ISBN.");
+    }
+
+    static void UpdateBookMenu()
+    {
+        bool volver = false;
+
+        while (!volver)
+        {
+            Console.Clear();
+            Console.WriteLine("========== ACTUALIZAR LIBRO ==========");
+            Console.WriteLine("1. Editar titulo");
+            Console.WriteLine("2. Editar autor");
+            Console.WriteLine("3. Editar año y categoria");
+            Console.WriteLine("4. Volver");
+            Console.WriteLine("======================================");
+
+            int opcion = ReadOption("Seleccione una opcion: ", 1, 4);
+
+            switch (opcion)
+            {
+                case 1:
+                    EditBookTitle();
+                    break;
+                case 2:
+                    EditBookAuthor();
+                    break;
+                case 3:
+                    EditBookYearCategory();
+                    break;
+                case 4:
+                    volver = true;
+                    break;
+            }
+        }
+    }
+
+    static void EditBookTitle()
+    {
+        ShowBookAction(
+            "Editar titulo",
+            "Se permitira modificar el titulo de un libro.");
+    }
+
+    static void EditBookAuthor()
+    {
+        ShowBookAction(
+            "Editar autor",
+            "Se permitira modificar el autor de un libro.");
+    }
+
+    static void EditBookYearCategory()
+    {
+        ShowBookAction(
+            "Editar año y categoria",
+            "Se permitira modificar el año y la categoria del libro.");
+    }
+
+    static void DeleteBook()
+    {
+        ShowBookAction(
+            "Eliminar libro",
+            "Se validara que el libro no este prestado antes de eliminarlo.");
+    }
+
+    static void ShowBookAction(string titulo, string mensaje)
+    {
+        Console.Clear();
+        Console.WriteLine("====================================");
+        Console.WriteLine($"       {titulo.ToUpperInvariant()}");
+        Console.WriteLine("====================================");
+        Console.WriteLine(mensaje);
+        Console.WriteLine();
+        Console.WriteLine("Presione una tecla para continuar...");
+        Console.ReadKey(true);
+    }
+
+    // ==============================
+    // OTROS MODULOS
+    // ==============================
 
     static void ShowUsersMenu()
     {
@@ -115,6 +314,10 @@ class Program
         Console.ReadKey(true);
     }
 
+    // ==============================
+    // SALIDA DEL SISTEMA
+    // ==============================
+
     static bool ConfirmExitAndSave()
     {
         while (true)
@@ -124,7 +327,8 @@ class Program
 
             if (respuesta == "S")
             {
-                Console.WriteLine("La opcion de guardar se desarrollara en el modulo de persistencia.");
+                Console.WriteLine(
+                    "La opcion de guardar se desarrollara en el modulo de persistencia.");
                 Console.WriteLine("Saliendo del sistema...");
                 return true;
             }
@@ -138,6 +342,10 @@ class Program
             Console.WriteLine("Respuesta invalida. Escriba S o N.");
         }
     }
+
+    // ==============================
+    // PRUEBAS DE MODELOS EV07
+    // ==============================
 
     static void MostrarPruebasObjetos()
     {
