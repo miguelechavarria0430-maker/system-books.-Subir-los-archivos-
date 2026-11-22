@@ -63,4 +63,3 @@ public class Usuario
         return ResumenCorto();
     }
 }
-'@ | Set-Content -Encoding utf8 .\Models\Usuario.cs
