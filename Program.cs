@@ -398,9 +398,94 @@ static void ShowModuleAction(string titulo, string mensaje)
     }
 
     static void ShowSearchReportsMenu()
+{
+    bool volver = false;
+
+    while (!volver)
     {
-        ShowModulePlaceholder("BUSQUEDAS Y REPORTES");
+        Console.Clear();
+        Console.WriteLine("======= BUSQUEDAS Y REPORTES =======");
+        Console.WriteLine("1. Buscar libro");
+        Console.WriteLine("2. Buscar usuario");
+        Console.WriteLine("3. Reportes");
+        Console.WriteLine("4. Volver");
+        Console.WriteLine("===================================");
+
+        int opcion = ReadOption("Seleccione una opcion: ", 1, 4);
+
+        switch (opcion)
+        {
+            case 1: SearchBook(); break;
+            case 2: SearchUser(); break;
+            case 3: ReportsMenu(); break;
+            case 4: volver = true; break;
+        }
     }
+}
+
+static void SearchBook()
+{
+    ShowModuleAction("Buscar libro",
+        "Se permitira buscar libros por titulo, autor o ISBN.");
+}
+
+static void SearchUser()
+{
+    ShowModuleAction("Buscar usuario",
+        "Se permitira buscar usuarios por nombre o documento.");
+}
+
+static void ReportsMenu()
+{
+    bool volver = false;
+
+    while (!volver)
+    {
+        Console.Clear();
+        Console.WriteLine("========== REPORTES ==========");
+        Console.WriteLine("1. Reporte por usuario");
+        Console.WriteLine("2. Reporte por libro");
+        Console.WriteLine("3. Prestamos vencidos");
+        Console.WriteLine("4. Resumen general");
+        Console.WriteLine("5. Volver");
+        Console.WriteLine("==============================");
+
+        int opcion = ReadOption("Seleccione una opcion: ", 1, 5);
+
+        switch (opcion)
+        {
+            case 1: ReportByUser(); break;
+            case 2: ReportByBook(); break;
+            case 3: ReportOverdue(); break;
+            case 4: ReportSummary(); break;
+            case 5: volver = true; break;
+        }
+    }
+}
+
+static void ReportByUser()
+{
+    ShowModuleAction("Reporte por usuario",
+        "Se mostraran los prestamos asociados a un usuario.");
+}
+
+static void ReportByBook()
+{
+    ShowModuleAction("Reporte por libro",
+        "Se mostrara el historial de prestamos de un libro.");
+}
+
+static void ReportOverdue()
+{
+    ShowModuleAction("Prestamos vencidos",
+        "Se identificaran los prestamos que superaron su fecha limite.");
+}
+
+static void ReportSummary()
+{
+    ShowModuleAction("Resumen general",
+        "Se mostrara un resumen de libros, usuarios y prestamos.");
+}
 
     static void ShowPersistenceMenu()
     {
