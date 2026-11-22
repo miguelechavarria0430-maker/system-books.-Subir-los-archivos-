@@ -488,9 +488,70 @@ static void ReportSummary()
 }
 
     static void ShowPersistenceMenu()
+{
+    bool volver = false;
+
+    while (!volver)
     {
-        ShowModulePlaceholder("GUARDAR / CARGAR DATOS");
+        Console.Clear();
+        Console.WriteLine("======= GUARDAR / CARGAR DATOS =======");
+        Console.WriteLine("1. Guardar datos");
+        Console.WriteLine("2. Cargar datos");
+        Console.WriteLine("3. Reiniciar datos");
+        Console.WriteLine("4. Volver");
+        Console.WriteLine("======================================");
+
+        int opcion = ReadOption("Seleccione una opcion: ", 1, 4);
+
+        switch (opcion)
+        {
+            case 1: SaveData(); break;
+            case 2: LoadData(); break;
+            case 3: ResetData(); break;
+            case 4: volver = true; break;
+        }
     }
+}
+
+static void SaveData()
+{
+    ShowModuleAction("Guardar datos",
+        "Se guardaran los datos del sistema.");
+}
+
+static void LoadData()
+{
+    ShowModuleAction("Cargar datos",
+        "Se cargaran los datos previamente guardados.");
+}
+
+static bool ConfirmResetData()
+{
+    while (true)
+    {
+        Console.Write("¿Esta seguro de reiniciar los datos? (S/N): ");
+        string? respuesta = Console.ReadLine()?.Trim().ToUpperInvariant();
+
+        if (respuesta == "S") return true;
+        if (respuesta == "N") return false;
+
+        Console.WriteLine("Respuesta invalida. Escriba S o N.");
+    }
+}
+
+static void ResetData()
+{
+    if (ConfirmResetData())
+    {
+        ShowModuleAction("Reiniciar datos",
+            "Se reiniciaran los datos del sistema.");
+    }
+    else
+    {
+        ShowModuleAction("Operacion cancelada",
+            "No se realizaron cambios en los datos.");
+    }
+}
 
     static void ShowModulePlaceholder(string nombreModulo)
     {
