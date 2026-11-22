@@ -570,29 +570,40 @@ static void ResetData()
     // ==============================
 
     static bool ConfirmExitAndSave()
+{
+    while (true)
     {
-        while (true)
-        {
-            Console.Write("¿Guardar antes de salir? (S/N): ");
-            string? respuesta = Console.ReadLine()?.Trim().ToUpperInvariant();
+        Console.WriteLine();
+        Console.WriteLine("========== CONFIRMAR SALIDA ==========");
+        Console.WriteLine("S. Guardar y salir");
+        Console.WriteLine("N. Salir sin guardar");
+        Console.WriteLine("C. Cancelar y volver al menu");
+        Console.WriteLine("======================================");
 
-            if (respuesta == "S")
-            {
-                Console.WriteLine(
-                    "La opcion de guardar se desarrollara en el modulo de persistencia.");
+        Console.Write("Seleccione una opcion: ");
+        string? respuesta = Console.ReadLine()?.Trim().ToUpperInvariant();
+
+        switch (respuesta)
+        {
+            case "S":
+                SaveData();
                 Console.WriteLine("Saliendo del sistema...");
                 return true;
-            }
 
-            if (respuesta == "N")
-            {
+            case "N":
                 Console.WriteLine("Saliendo sin guardar...");
                 return true;
-            }
 
-            Console.WriteLine("Respuesta invalida. Escriba S o N.");
+            case "C":
+                Console.WriteLine("Regresando al menu principal...");
+                return false;
+
+            default:
+                Console.WriteLine("Opcion invalida. Escriba S, N o C.");
+                break;
         }
     }
+}
 
     // ==============================
     // PRUEBAS DE MODELOS EV07
