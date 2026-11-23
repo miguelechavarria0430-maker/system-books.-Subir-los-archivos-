@@ -637,16 +637,21 @@ static void ResetData()
         libro1.Disponible = false;
 
         Console.WriteLine("\n--- LIBROS ---");
+        Console.WriteLine(libro1.ResumenCorto());
         Console.WriteLine(libro1.DetalleCompleto());
         Console.WriteLine();
+        Console.WriteLine(libro2.ResumenCorto());
         Console.WriteLine(libro2.DetalleCompleto());
 
         Console.WriteLine("\n--- USUARIOS ---");
+        Console.WriteLine(usuario1.ResumenCorto());
         Console.WriteLine(usuario1.DetalleCompleto());
         Console.WriteLine();
+        Console.WriteLine(usuario2.ResumenCorto());
         Console.WriteLine(usuario2.DetalleCompleto());
 
         Console.WriteLine("\n--- PRESTAMO ---");
+        Console.WriteLine(prestamo1.ResumenCorto());
         Console.WriteLine(prestamo1.DetalleCompleto());
 
         Console.WriteLine("\n--- VALIDACIONES ---");
@@ -658,3 +663,4 @@ static void ResetData()
         Console.WriteLine($"Dias transcurridos: {prestamo1.DiasTranscurridos()}");
     }
 }
+
