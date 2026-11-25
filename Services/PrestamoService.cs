@@ -111,9 +111,33 @@ public class PrestamoService
     {
         return ObtenerVencidos().Count;
     }
-
     public int TotalDevueltos()
     {
         return ObtenerDevueltos().Count;
+    }
+
+    public List<Prestamo> OrdenarPorFechaVencimiento()
+    {
+        return prestamos
+            .OrderBy(p => p.FechaVencimiento)
+            .ToList();
+    }
+
+    public List<Prestamo> BuscarPorEstado(EstadoPrestamo estado)
+    {
+        return prestamos
+            .Where(p => p.Estado == estado)
+            .ToList();
+    }
+
+    public double PromedioDiasPrestamo()
+    {
+        List<Prestamo> devueltos = ObtenerDevueltos();
+
+        if (devueltos.Count == 0)
+            return 0;
+
+        return devueltos.Average(p =>
+            (p.FechaDevolucion!.Value - p.FechaPrestamo).TotalDays);
     }
 }
