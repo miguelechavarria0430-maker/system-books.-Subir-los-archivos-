@@ -1,4 +1,3 @@
-
 namespace SystemBooks.Models;
 
 /// <summary>
@@ -39,8 +38,24 @@ public class Usuario
         return $"ID: {Id}\n" +
                $"Nombre: {Nombre}\n" +
                $"Correo: {Correo}\n" +
-               $"Teléfono: {Telefono}\n" +
-               $"Activo: {(Activo ? "Sí" : "No")}";
+               $"Telefono: {Telefono}\n" +
+               $"Activo: {(Activo ? "Si" : "No")}";
+    }
+
+    public bool ActualizarContacto(string correo, string telefono)
+    {
+        if (string.IsNullOrWhiteSpace(correo) ||
+            string.IsNullOrWhiteSpace(telefono))
+            return false;
+
+        Correo = correo;
+        Telefono = telefono;
+        return true;
+    }
+
+    public void CambiarEstado(bool activo)
+    {
+        Activo = activo;
     }
 
     public override string ToString()
