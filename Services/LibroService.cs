@@ -32,6 +32,21 @@ public class LibroService
         return libros.ToList();
     }
 
+    public List<Libro> ObtenerDisponibles()
+    {
+        return libros.Where(l => l.Disponible).ToList();
+    }
+
+    public List<Libro> ObtenerPrestados()
+    {
+        return libros.Where(l => !l.Disponible).ToList();
+    }
+
+    public Libro? BuscarPorId(int id)
+    {
+        return libros.FirstOrDefault(l => l.Id == id);
+    }
+
     public Libro? BuscarPorISBN(string isbn)
     {
         return libros.FirstOrDefault(l =>
