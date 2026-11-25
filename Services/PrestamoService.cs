@@ -36,6 +36,16 @@ public class PrestamoService
         return true;
     }
 
+    public bool EliminarPrestamo(int id)
+    {
+        Prestamo? prestamo = BuscarPorId(id);
+
+        if (prestamo == null || prestamo.Estado != EstadoPrestamo.Devuelto)
+            return false;
+
+        return prestamos.Remove(prestamo);
+    }
+
     public Prestamo? BuscarPorId(int id)
     {
         return prestamos.FirstOrDefault(p => p.Id == id);
@@ -111,6 +121,7 @@ public class PrestamoService
     {
         return ObtenerVencidos().Count;
     }
+
     public int TotalDevueltos()
     {
         return ObtenerDevueltos().Count;
