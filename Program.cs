@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using SystemBooks.Models;
 using SystemBooks.Services;
@@ -13,6 +14,7 @@ class Program
     // ==============================
     static readonly LibroService libroService = new LibroService();
     static readonly UsuarioService usuarioService = new UsuarioService();
+    static readonly PrestamoService prestamoService = new PrestamoService();
     static int siguienteIdLibro = 1;
     static int siguienteIdUsuario = 1;
 
@@ -588,7 +590,15 @@ class Program
         Usuario? usuario = AskUserById();
         if (usuario == null) return;
 
-        Console.WriteLine("Regla: no se permite eliminar si tiene préstamos activos.");
+        bool tieneActivos = prestamoService
+            .BuscarPorUsuario(usuario.Id)
+            .Any(p => p.Estado == EstadoPrestamo.Activo);
+
+        if (tieneActivos)
+        {
+            Pause("No se puede eliminar: el usuario tiene préstamos activos.");
+            return;
+        }
 
         if (AskYesNo($"¿Eliminar a '{usuario.Nombre}'?"))
         {
@@ -602,7 +612,7 @@ class Program
     }
 
     // ==============================
-    // 3) MENU DE PRESTAMOS (mensajes)
+    // 3) MENU DE PRESTAMOS
     // ==============================
     static void ShowLoansMenu()
     {
@@ -638,13 +648,49 @@ class Program
 
     static void CreateLoan()
     {
-        ShowAction("Crear préstamo",
-            "Se creará un préstamo nuevo.\n\n" +
-            "Validaciones sugeridas:\n" +
-            " - El usuario debe existir y estar activo.\n" +
-            " - El libro debe existir y estar disponible.\n" +
-            " - La fecha límite debe ser posterior a la fecha actual.\n" +
-            " - El usuario no debe superar el máximo de préstamos activos.");
+        Header("Crear préstamo");
+        Console.WriteLine("Validaciones: usuario existente y activo, libro existente y disponible,");
+        Console.WriteLine("días de préstamo entre 1 y 60.");
+        Console.WriteLine();
+
+        Usuario? usuario = AskUserById();
+        if (usuario == null) return;
+
+        if (!usuario.Activo)
+        {
+            Pause("No se puede crear el préstamo: el usuario está inactivo.");
+            return;
+        }
+
+        Libro? libro = AskBookById();
+        if (libro == null) return;
+
+        if (!libro.Disponible)
+        {
+            Pause("No se puede crear el préstamo: el libro no está disponible.");
+            return;
+        }
+
+        Console.Write("Días de préstamo (1-60): ");
+        if (!int.TryParse(Console.ReadLine(), out int dias) || dias < 1 || dias > 60)
+        {
+            Pause("Cantidad de días inválida.");
+            return;
+        }
+
+        Prestamo nuevo = new Prestamo(
+            0, libro, usuario, DateTime.Today, DateTime.Today.AddDays(dias));
+
+        if (!prestamoService.RegistrarPrestamo(nuevo))
+        {
+            Pause("No se pudo registrar el préstamo.");
+            return;
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Préstamo creado correctamente:");
+        Console.WriteLine(nuevo.DetalleCompleto());
+        Pause();
     }
 
     static void ListLoansMenu()
@@ -673,27 +719,92 @@ class Program
         }
     }
 
+    static void ShowLoanList(string titulo, List<Prestamo> prestamos)
+    {
+        Header(titulo);
+
+        if (prestamos.Count == 0)
+            Console.WriteLine("No hay préstamos para mostrar.");
+        else
+            foreach (Prestamo p in prestamos)
+                Console.WriteLine(p.ResumenCorto());
+
+        Pause();
+    }
+
     static void ListLoansAll() =>
-        ShowAction("Listar todos los préstamos", "Se mostrará el listado completo de préstamos.");
+        ShowLoanList("Todos los préstamos", prestamoService.ObtenerTodos());
 
     static void ListLoansActive() =>
-        ShowAction("Listar préstamos activos", "Se mostrarán los préstamos que aún no han sido devueltos.");
+        ShowLoanList("Préstamos activos", prestamoService.ObtenerActivos());
 
     static void ListLoansClosed() =>
-        ShowAction("Listar préstamos cerrados", "Se mostrarán los préstamos ya devueltos.");
+        ShowLoanList("Préstamos cerrados", prestamoService.ObtenerDevueltos());
 
-    static void ViewLoanDetail() =>
-        ShowAction("Detalle de préstamo", "Se consultará un préstamo por su ID.");
+    static Prestamo? AskLoanById()
+    {
+        Console.Write("ID del préstamo: ");
+        if (!int.TryParse(Console.ReadLine(), out int id))
+        {
+            Pause("ID inválido.");
+            return null;
+        }
 
-    static void RegisterReturn() =>
-        ShowAction("Registrar devolución",
-            "Se marcará el préstamo como DEVUELTO y el libro quedará DISPONIBLE.");
+        Prestamo? prestamo = prestamoService.BuscarPorId(id);
+        if (prestamo == null)
+            Pause("No existe un préstamo con ese ID.");
 
-    static void DeleteLoan() =>
-        ShowAction("Eliminar préstamo",
-            "Reglas sugeridas:\n" +
-            " - Solo se pueden eliminar préstamos cerrados (devueltos).\n" +
-            " - No eliminar préstamos activos ni vencidos.");
+        return prestamo;
+    }
+
+    static void ViewLoanDetail()
+    {
+        Header("Detalle de préstamo");
+        Prestamo? prestamo = AskLoanById();
+        if (prestamo == null) return;
+
+        Console.WriteLine();
+        Console.WriteLine(prestamo.DetalleCompleto());
+        Pause();
+    }
+
+    static void RegisterReturn()
+    {
+        Header("Registrar devolución");
+        Prestamo? prestamo = AskLoanById();
+        if (prestamo == null) return;
+
+        if (prestamoService.RegistrarDevolucion(prestamo.Id))
+            Pause("Préstamo marcado como DEVUELTO. El libro ahora está DISPONIBLE.");
+        else
+            Pause("No se pudo registrar: el préstamo ya fue devuelto.");
+    }
+
+    static void DeleteLoan()
+    {
+        Header("Eliminar préstamo");
+        Console.WriteLine("Regla: solo se pueden eliminar préstamos cerrados (devueltos).");
+        Console.WriteLine();
+
+        Prestamo? prestamo = AskLoanById();
+        if (prestamo == null) return;
+
+        if (prestamo.Estado != EstadoPrestamo.Devuelto)
+        {
+            Pause("Solo se pueden eliminar préstamos cerrados (devueltos).");
+            return;
+        }
+
+        if (AskYesNo($"¿Eliminar el préstamo #{prestamo.Id}?"))
+        {
+            prestamoService.EliminarPrestamo(prestamo.Id);
+            Pause("Préstamo eliminado.");
+        }
+        else
+        {
+            Pause("Operación cancelada.");
+        }
+    }
 
     // ==============================
     // 4) BUSQUEDAS Y REPORTES
@@ -831,14 +942,44 @@ class Program
         }
     }
 
-    static void ReportByUser() =>
-        ShowAction("Reporte por usuario", "Se mostrarán los préstamos asociados a un usuario.");
+    static void ReportByUser()
+    {
+        Header("Reporte por usuario");
+        Usuario? usuario = AskUserById();
+        if (usuario == null) return;
 
-    static void ReportByBook() =>
-        ShowAction("Reporte por libro", "Se mostrará el historial de préstamos de un libro.");
+        Console.WriteLine($"\nPréstamos de {usuario.Nombre}:");
+        List<Prestamo> lista = prestamoService.BuscarPorUsuario(usuario.Id);
+
+        if (lista.Count == 0)
+            Console.WriteLine("Este usuario no tiene préstamos.");
+        else
+            foreach (Prestamo p in lista)
+                Console.WriteLine(p.ResumenCorto());
+
+        Pause();
+    }
+
+    static void ReportByBook()
+    {
+        Header("Reporte por libro");
+        Libro? libro = AskBookById();
+        if (libro == null) return;
+
+        Console.WriteLine($"\nHistorial de '{libro.Titulo}':");
+        List<Prestamo> lista = prestamoService.BuscarPorLibro(libro.Id);
+
+        if (lista.Count == 0)
+            Console.WriteLine("Este libro no tiene préstamos.");
+        else
+            foreach (Prestamo p in lista)
+                Console.WriteLine(p.ResumenCorto());
+
+        Pause();
+    }
 
     static void ReportOverdue() =>
-        ShowAction("Reporte de vencidos", "Se mostrarán los préstamos cuya fecha límite ya pasó.");
+        ShowLoanList("Préstamos vencidos", prestamoService.ObtenerVencidos());
 
     static void ReportSummary()
     {
@@ -852,6 +993,13 @@ class Program
         Console.WriteLine($"Total: {usuarioService.TotalUsuarios()}");
         Console.WriteLine($"Activos: {usuarioService.TotalActivos()}");
         Console.WriteLine($"Inactivos: {usuarioService.TotalInactivos()}");
+        Console.WriteLine();
+        Console.WriteLine("--- Préstamos ---");
+        Console.WriteLine($"Total: {prestamoService.TotalPrestamos()}");
+        Console.WriteLine($"Activos: {prestamoService.TotalActivos()}");
+        Console.WriteLine($"Vencidos: {prestamoService.TotalVencidos()}");
+        Console.WriteLine($"Devueltos: {prestamoService.TotalDevueltos()}");
+        Console.WriteLine($"Promedio de días: {prestamoService.PromedioDiasPrestamo():F1}");
         Pause();
     }
 
@@ -926,7 +1074,7 @@ class Program
     // ==============================
     static void MostrarPruebasObjetos()
     {
-        Console.WriteLine("===== PRUEBA DE OBJETOS: LIBROS =====");
+        Console.WriteLine("===== LIBROS =====");
         Libro l1 = new Libro(1, "Cien años de soledad", "Gabriel García Márquez", "978-0307474728", 1967);
         Libro l2 = new Libro(2, "El coronel no tiene quien le escriba", "Gabriel García Márquez", "978-0060753610", 1961);
 
@@ -938,7 +1086,7 @@ class Program
         Console.WriteLine($"Disponible l2: {l2.Disponible}");
 
         Console.WriteLine();
-        Console.WriteLine("===== PRUEBA DE OBJETOS: USUARIOS =====");
+        Console.WriteLine("===== USUARIOS =====");
         Usuario u1 = new Usuario(1, "Ana Pérez", "ana@correo.com", "3001112233");
         Usuario u2 = new Usuario(2, "Luis Gómez", "luis@correo.com", "3004445566");
 
@@ -949,8 +1097,18 @@ class Program
         Console.WriteLine($"Activo u1: {u1.Activo}");
         Console.WriteLine($"Activo u2: {u2.Activo}");
 
-        // NOTA: aquí va la parte del préstamo (Estado, EstaVencido(), DiasTranscurridos())
-        // si quieres conservarla, copia aquí tu código original de MostrarPruebasObjetos.
+        Console.WriteLine();
+        Console.WriteLine("===== PRÉSTAMO =====");
+        Prestamo p1 = new Prestamo(
+            1, l1, u1, DateTime.Today.AddDays(-20), DateTime.Today.AddDays(-5));
+        l1.Disponible = false;
+
+        Console.WriteLine(p1.ResumenCorto());
+        Console.WriteLine(p1.DetalleCompleto());
+        Console.WriteLine($"Estado: {p1.Estado}");
+        Console.WriteLine($"EstaVencido(): {p1.EstaVencido()}");
+        Console.WriteLine($"DiasTranscurridos(): {p1.DiasTranscurridos()}");
+        Console.WriteLine($"FechaDevolucion es null: {p1.FechaDevolucion == null}");
     }
 
     // ==============================
@@ -970,7 +1128,7 @@ class Program
         List<string> titulosList = new List<string>();   // tamaño dinámico
         titulosList.Add("Libro A");
         titulosList.Add("Libro B");
-        titulosList.Add("Libro C");   // se puede seguir agregando
+        titulosList.Add("Libro C");    // se puede seguir agregando
         titulosList.Remove("Libro A"); // y eliminando
         Console.WriteLine($"Elementos en la lista: {titulosList.Count}");
 
