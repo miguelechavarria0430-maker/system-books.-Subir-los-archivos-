@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemBooks.Models;
@@ -42,6 +43,12 @@ public class UsuarioService
         return usuarios.Where(u =>
             u.Nombre.Contains(nombre, StringComparison.OrdinalIgnoreCase))
             .ToList();
+    }
+
+    public Usuario? BuscarPorDocumento(string documento)
+    {
+        return usuarios.FirstOrDefault(u =>
+            u.Documento.Equals(documento, StringComparison.OrdinalIgnoreCase));
     }
 
     public List<Usuario> OrdenarPorNombre()

@@ -31,9 +31,9 @@ public static class DemoServicios
         libroService.AgregarLibro(l3);
         libroService.AgregarLibro(l4);
 
-        Usuario u1 = new Usuario(1, "Luis Gómez", "luis@correo.com", "3004445566");
-        Usuario u2 = new Usuario(2, "Ana Pérez", "ana@correo.com", "3001112233");
-        Usuario u3 = new Usuario(3, "Carlos Ruiz", "carlos@correo.com", "3007778899");
+        Usuario u1 = new Usuario(1, "1020304050", "Luis Gómez", "luis@correo.com", "3004445566");
+        Usuario u2 = new Usuario(2, "1020304051", "Ana Pérez", "ana@correo.com", "3001112233");
+        Usuario u3 = new Usuario(3, "1020304052", "Carlos Ruiz", "carlos@correo.com", "3007778899");
         u3.CambiarEstado(false); // usuario inactivo para la prueba
 
         usuarioService.AgregarUsuario(u1);
@@ -61,6 +61,8 @@ public static class DemoServicios
         Console.WriteLine();
         Console.WriteLine($"Libro por ISBN 978-8437604572: {libroService.BuscarPorISBN("978-8437604572")}");
         Mostrar("Usuarios por nombre que contenga 'ana'", usuarioService.BuscarPorNombre("ana"));
+Console.WriteLine();
+Console.WriteLine($"Usuario por documento 1020304051: {usuarioService.BuscarPorDocumento("1020304051")}");
         Console.WriteLine();
         Console.WriteLine($"Usuario por ID 1: {usuarioService.BuscarPorId(1)}");
         Mostrar("Préstamos con estado Activo", prestamoService.BuscarPorEstado(EstadoPrestamo.Activo));

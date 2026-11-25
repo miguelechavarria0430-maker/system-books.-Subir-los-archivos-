@@ -1093,8 +1093,8 @@ class Program
 
         Console.WriteLine();
         Console.WriteLine("===== USUARIOS =====");
-        Usuario u1 = new Usuario(1, "Ana Pérez", "ana@correo.com", "3001112233");
-        Usuario u2 = new Usuario(2, "Luis Gómez", "luis@correo.com", "3004445566");
+        Usuario u1 = new Usuario(1, "1020304051", "Ana Pérez", "ana@correo.com", "3001112233");
+        Usuario u2 = new Usuario(2, "1020304050", "Luis Gómez", "luis@correo.com", "3004445566");
 
         Console.WriteLine(u1.ResumenCorto());
         Console.WriteLine(u1.DetalleCompleto());
