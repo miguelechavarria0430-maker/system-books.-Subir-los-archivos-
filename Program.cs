@@ -28,6 +28,12 @@ class Program
             return;
         }
 
+        if (args.Length > 0 && args[0] == "--pruebas-servicios")
+        {
+            DemoServicios.Ejecutar();
+            return;
+        }
+
         if (args.Length > 0 && args[0] == "--array-vs-list")
         {
             CompararArrayVsList();
