@@ -1,8 +1,9 @@
-﻿
+﻿using System;
+
 namespace SystemBooks.Models;
 
 /// <summary>
-/// Representa el prÃ©stamo de un libro a un usuario.
+/// Representa el préstamo de un libro a un usuario.
 /// </summary>
 public class Prestamo
 {
@@ -55,20 +56,20 @@ public class Prestamo
 
     public string ResumenCorto()
     {
-        return $"PrÃ©stamo #{Id} | {Libro.Titulo} | {Usuario.Nombre} | {Estado}";
+        return $"Préstamo #{Id} | {Libro.Titulo} | {Usuario.Nombre} | {Estado}";
     }
 
     public string DetalleCompleto()
     {
-        return $"ID del prÃ©stamo: {Id}\n" +
+        return $"ID del préstamo: {Id}\n" +
                $"Libro: {Libro.Titulo}\n" +
                $"Usuario: {Usuario.Nombre}\n" +
-               $"Fecha del prÃ©stamo: {FechaPrestamo:dd/MM/yyyy}\n" +
+               $"Fecha del préstamo: {FechaPrestamo:dd/MM/yyyy}\n" +
                $"Fecha de vencimiento: {FechaVencimiento:dd/MM/yyyy}\n" +
-               $"Fecha de devoluciÃ³n: {(FechaDevolucion.HasValue ? FechaDevolucion.Value.ToString("dd/MM/yyyy") : "Pendiente")}\n" +
+               $"Fecha de devolución: {(FechaDevolucion.HasValue ? FechaDevolucion.Value.ToString("dd/MM/yyyy") : "Pendiente")}\n" +
                $"Estado: {Estado}\n" +
-               $"Â¿EstÃ¡ vencido?: {(EstaVencido() ? "SÃ­" : "No")}\n" +
-               $"DÃ­as transcurridos: {DiasTranscurridos()}";
+               $"¿Está vencido?: {(EstaVencido() ? "Sí" : "No")}\n" +
+               $"Días transcurridos: {DiasTranscurridos()}";
     }
 
     public bool RegistrarDevolucion(DateTime fechaDevolucion)
@@ -93,9 +94,9 @@ public class Prestamo
         FechaVencimiento = FechaVencimiento.AddDays(diasAdicionales);
         return true;
     }
+
     public override string ToString()
     {
         return ResumenCorto();
     }
 }
-
